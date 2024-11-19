@@ -1,20 +1,65 @@
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
+import { CustomInput } from "./CustomInput";
+import { useState } from "react";
+import { toast } from "react-toastify";
 
 export const SignUpForm = () => {
+  const [form, setForm] = useState({});
+  const fields = [
+    {
+      label: "Name",
+      placeholder: "Type your name",
+      type: "text",
+      required: true,
+      name: "name",
+    },
+    {
+      label: "Email",
+      placeholder: "Type your Email",
+      type: "email",
+      required: true,
+      name: "email",
+    },
+    {
+      label: "Password",
+      placeholder: "****",
+      type: "password",
+      required: true,
+      name: "password",
+    },
+    {
+      label: "Confirm Password",
+      placeholder: "****",
+      type: "password",
+      required: true,
+      name: "confirmPassword",
+    },
+  ];
+  const handleOnChange = (e) => {
+    const { name, value } = e.target;
+    setForm({
+      ...form,
+      [name]: value,
+    });
+  };
+  const handleOnSubmit = (e) => {
+    e.preventDefault();
+    console.log(form);
+    const { confirmPassword, ...rest } = form;
+    if (confirmPassword !== rest.password) {
+      return toast.error(
+        "Password does not match. Please, try correct password"
+      );
+    }
+  };
   return (
     <div className="border rounded p-4">
       <h4 className="mb-4">SIgn Up Now</h4>
-      <Form>
-        <Form.Group className="mb-3" controlId="formBasicEmail">
-          <Form.Label>Email address</Form.Label>
-          <Form.Control type="email" placeholder="Enter email" />
-        </Form.Group>
-
-        <Form.Group className="mb-3" controlId="formBasicPassword">
-          <Form.Label>Password</Form.Label>
-          <Form.Control type="password" placeholder="Password" />
-        </Form.Group>
+      <Form onSubmit={handleOnSubmit}>
+        {fields.map((input) => (
+          <CustomInput key={input.name} {...input} onChange={handleOnChange} />
+        ))}
         <div className="d-grid">
           <Button variant="primary" type="submit">
             Submit
